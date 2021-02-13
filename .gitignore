@@ -127,3 +127,16 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+.idea
+
+**bert/*
+!**bert/.gitkeep
+
+**data/*
+!**data/sample.csv
+!**data/train.json
+!**data/validation.json
+
+best_model.bin
+result.csv
