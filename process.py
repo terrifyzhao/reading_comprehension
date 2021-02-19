@@ -6,6 +6,7 @@ import os
 import joblib
 import json
 from sklearn.utils import shuffle
+import jieba
 
 
 def json2csv(name, is_shuffle=False):
@@ -31,7 +32,7 @@ def json2csv(name, is_shuffle=False):
     df = pd.DataFrame.from_records(data_list, columns=['q_id', 'content', 'question', 'choice', 'answer'])
     if is_shuffle:
         df = shuffle(df)
-    length = int(len(df) * 0.9)
+    length = int(len(df) * 0.95)
     train = df[0:length]
     valid = df[length:]
     train.to_csv('data/train.csv', index=False, encoding='utf_8_sig')
@@ -59,7 +60,7 @@ class Dataset(torch.utils.data.Dataset):
         return len(self.labels)
 
 
-def process(name, tokenizer, batch_size, max_length=128, predict=False):
+def process(name, tokenizer, batch_size, max_length=128, cut=False):
     if not os.path.exists(f'data/{name}.csv'):
         json2csv(name)
 
@@ -83,9 +84,13 @@ def process(name, tokenizer, batch_size, max_length=128, predict=False):
                 content = row[1]
                 if row[4] == 1 and label is None:
                     label = i
+                if cut:
+                    qa = list(jieba.cut(qa))
+                    content = list(jieba.cut(content))
                 encoding = tokenizer(qa,
                                      content,
                                      return_tensors='pt',
+                                     is_split_into_words=cut,
                                      truncation=True,
                                      padding='max_length',
                                      max_length=max_length)

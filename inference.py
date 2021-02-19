@@ -6,6 +6,7 @@ from tqdm import tqdm
 from process import process
 
 batch_size = 100
+model_path = './bert'
 
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 data = json.load(open('data/validation.json'))
@@ -24,8 +25,8 @@ for d in data:
 df = pd.DataFrame.from_records(data_list, columns=['q_id', 'content', 'question', 'choice', 'labels'])
 df.to_csv('data/test.csv', index=False, encoding='utf_8_sig')
 
-tokenizer = BertTokenizerFast.from_pretrained('./bert')
-test_loader = process('test', tokenizer, batch_size, max_length=512, predict=True)
+tokenizer = BertTokenizerFast.from_pretrained(model_path)
+test_loader = process('test', tokenizer, batch_size, max_length=512, cut=True)
 
 model = torch.load('best_model.bin').to(device)
 
@@ -40,12 +41,6 @@ for batch in tqdm(test_loader):
 result = pd.DataFrame()
 result['id'] = df['q_id'].unique()
 result['label'] = output
-
-
-# res = df.groupby('id')['logits'].idxmax() % df.groupby('id')['logits'].count()
-# result = pd.DataFrame()
-# result['id'] = res.index
-# result['label'] = res.values
 
 
 def label_mapping(x):
