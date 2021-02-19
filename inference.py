@@ -56,3 +56,5 @@ def label_mapping(x):
 
 result['label'] = result['label'].apply(lambda x: label_mapping(x))
 result.to_csv('result.csv', index=False)
+
+
