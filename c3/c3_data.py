@@ -32,3 +32,12 @@ if __name__ == '__main__':
     train_test = json2csv('test')
     train_df = train_df.append(train_dev)
     train_df.to_csv(f'c3_train.csv', index=False, encoding='utf_8_sig')
+
+    length = [len(l) for l in train_df['content']]
+    import numpy as np
+
+    print(np.percentile(length, 50))
+    print(np.percentile(length, 60))
+    print(np.percentile(length, 70))
+    print(np.percentile(length, 80))
+    print(np.percentile(length, 90))

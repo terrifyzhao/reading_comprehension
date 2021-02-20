@@ -3,10 +3,10 @@ from transformers import BertTokenizerFast, BertForMultipleChoice
 import torch
 import pandas as pd
 from tqdm import tqdm
-from process import process
+from snippets import process
 
 batch_size = 100
-model_path = './bert'
+model_path = '/home/joska/ptm/roberta'
 
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 data = json.load(open('data/validation.json'))
@@ -62,7 +62,7 @@ df.to_csv('data/test_post.csv', index=False, encoding='utf_8_sig')
 
 tokenizer = BertTokenizerFast.from_pretrained(model_path)
 # model = BertForMultipleChoice.from_pretrained(model_path)
-model = torch.load('best_model_large.bin').to(device)
+model = torch.load('roberta.bin').to(device)
 
 test_loader_pre = process('test_pre', tokenizer, batch_size, max_length=512, cut=False)
 test_loader_mid = process('test_mid', tokenizer, batch_size, max_length=512, cut=False)
