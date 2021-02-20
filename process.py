@@ -32,7 +32,7 @@ def json2csv(name, is_shuffle=False):
     df = pd.DataFrame.from_records(data_list, columns=['q_id', 'content', 'question', 'choice', 'answer'])
     if is_shuffle:
         df = shuffle(df)
-    length = int(len(df) * 0.95)
+    length = int(len(df) * 0.9)
     train = df[0:length]
     valid = df[length:]
     train.to_csv('data/train.csv', index=False, encoding='utf_8_sig')
@@ -88,7 +88,7 @@ def process(name, tokenizer, batch_size, max_length=128, cut=False):
                     qa = list(jieba.cut(qa))
                     content = list(jieba.cut(content))
                 encoding = tokenizer(qa,
-                                     content,
+                                     content[0:512],
                                      return_tensors='pt',
                                      is_split_into_words=cut,
                                      truncation=True,
@@ -108,6 +108,9 @@ def process(name, tokenizer, batch_size, max_length=128, cut=False):
             batch_input_ids.append(torch.cat(batch_input_id, dim=0))
             batch_token_type_ids.append(torch.cat(batch_token_type_id, dim=0))
             batch_attention_masks.append(torch.cat(batch_attention_mask, dim=0))
+
+
+
 
         dic = {'input_ids': batch_input_ids,
                'token_type_ids': batch_token_type_ids,

@@ -16,7 +16,7 @@ lr = 2e-5
 max_length = 512
 accumulation_steps = 4
 model_path = '/home/joska/ptm/bert_large'
-min_valid_loss = float('inf')
+min_valid_loss = 1.2289
 
 tokenizer = BertTokenizerFast.from_pretrained(model_path)
 
@@ -100,7 +100,7 @@ def test_func():
     return valid_loss / len(valid_loader), valid_acc / len(valid_loader)
 
 
-for epoch in range(100):
+for epoch in range(5):
     print('************start train************')
     train_loss, train_acc = train_func()
     print(f'train_loss: {train_loss:.4f}, train_acc: {train_acc:.4f}')
